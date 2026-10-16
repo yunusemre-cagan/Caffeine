@@ -89,11 +89,23 @@ struct SettingsView: View {
                         .padding(.horizontal, 4)
                         .opacity(0.6)
                     
+                    // Launch at Login Toggle
+                    ToggleRow(
+                        icon: "rays",
+                        title: "Başlangıçta Otomatik Başlat",
+                        subtitle: "Mac açıldığında menü çubuğunda hazır bekler, Dock'ta kalmasına gerek kalmaz",
+                        isOn: $manager.launchAtLogin
+                    )
+                    
+                    Divider()
+                        .padding(.horizontal, 4)
+                        .opacity(0.6)
+                    
                     // Show in Dock Toggle
                     ToggleRow(
                         icon: "dock.rectangle",
-                        title: "Dock'ta Göster",
-                        subtitle: "Uygulama simgesini macOS Dock alanında gösterir",
+                        title: "Yalnızca Açıkken Dock'ta Göster",
+                        subtitle: "Sistem uyanıkken Dock'ta görünür, pasifken Dock'tan gizlenir",
                         isOn: $manager.showInDock
                     )
                 }

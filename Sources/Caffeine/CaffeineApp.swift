@@ -30,6 +30,9 @@ struct CaffeineApp: App {
         // Ana Bağımsız Pencere
         Window("Caffeine", id: "main-window") {
             MainContentView(manager: manager, isStandaloneWindow: true)
+                .onOpenURL { url in
+                    handleURL(url)
+                }
         }
         .windowResizability(.contentSize)
         .defaultPosition(.center)
@@ -37,6 +40,9 @@ struct CaffeineApp: App {
         // macOS Menü Çubuğu Öğesi (Status Item & Popover)
         MenuBarExtra {
             MainContentView(manager: manager, isStandaloneWindow: false)
+                .onOpenURL { url in
+                    handleURL(url)
+                }
         } label: {
             HStack(spacing: 5) {
                 if manager.isActive && manager.showTimeInMenuBar {
@@ -52,5 +58,19 @@ struct CaffeineApp: App {
             }
         }
         .menuBarExtraStyle(.window)
+    }
+    
+    private func handleURL(_ url: URL) {
+        let action = url.host ?? url.pathComponents.dropFirst().first ?? ""
+        switch action {
+        case "toggle":
+            manager.toggle()
+        case "start":
+            manager.start(duration: 3600, presetId: "1h")
+        case "stop":
+            manager.stop()
+        default:
+            break
+        }
     }
 }

@@ -49,9 +49,20 @@ cat << 'EOF' > "${BUNDLE_DIR}/Contents/Info.plist"
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>LSUIElement</key>
-    <false/>
+    <true/>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.yunusemrecagan.caffeine</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>caffeine</string>
+            </array>
+        </dict>
+    </array>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026. All rights reserved.</string>
 </dict>
@@ -63,6 +74,7 @@ echo "⚡️ Compiling Swift source files..."
 SWIFT_SOURCES=(
     Sources/Caffeine/CaffeineApp.swift
     Sources/Caffeine/CaffeineManager.swift
+    Sources/Caffeine/CaffeineIntents.swift
     Sources/Caffeine/Views/StatusHeroView.swift
     Sources/Caffeine/Views/PresetGridView.swift
     Sources/Caffeine/Views/CustomDurationView.swift
@@ -78,6 +90,8 @@ swiftc \
     -framework IOKit \
     -framework UserNotifications \
     -framework Combine \
+    -framework ServiceManagement \
+    -framework AppIntents \
     "${SWIFT_SOURCES[@]}" \
     -o "${MACOS_DIR}/${APP_NAME}"
 

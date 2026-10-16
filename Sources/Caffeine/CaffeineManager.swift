@@ -3,6 +3,7 @@ import Combine
 import AppKit
 import IOKit.pwr_mgt
 import UserNotifications
+import ServiceManagement
 
 public struct PresetOption: Identifiable, Equatable {
     public let id: String
@@ -81,6 +82,13 @@ public final class CaffeineManager: ObservableObject {
         }
     }
     
+    @Published public var launchAtLogin: Bool {
+        didSet {
+            UserDefaults.standard.set(launchAtLogin, forKey: "caffeine_launchAtLogin")
+            updateLaunchAtLogin()
+        }
+    }
+    
     // Internal Power Assertion
     private var assertionID: IOPMAssertionID = 0
     private var timerCancellable: AnyCancellable?
@@ -100,7 +108,10 @@ public final class CaffeineManager: ObservableObject {
             defaults.set(true, forKey: "caffeine_sendNotificationOnFinish")
         }
         if defaults.object(forKey: "caffeine_showInDock") == nil {
-            defaults.set(false, forKey: "caffeine_showInDock")
+            defaults.set(true, forKey: "caffeine_showInDock")
+        }
+        if defaults.object(forKey: "caffeine_launchAtLogin") == nil {
+            defaults.set(true, forKey: "caffeine_launchAtLogin")
         }
         
         self.preventDisplaySleep = defaults.bool(forKey: "caffeine_preventDisplaySleep")
@@ -108,8 +119,10 @@ public final class CaffeineManager: ObservableObject {
         self.playSoundOnFinish = defaults.bool(forKey: "caffeine_playSoundOnFinish")
         self.sendNotificationOnFinish = defaults.bool(forKey: "caffeine_sendNotificationOnFinish")
         self.showInDock = defaults.bool(forKey: "caffeine_showInDock")
+        self.launchAtLogin = defaults.bool(forKey: "caffeine_launchAtLogin")
         
         requestNotificationPermission()
+        updateLaunchAtLogin()
         updateDockPolicy()
     }
     
@@ -145,6 +158,7 @@ public final class CaffeineManager: ObservableObject {
         targetDate = nil
         timerCancellable?.cancel()
         timerCancellable = nil
+        updateDockPolicy()
     }
     
     public func start(duration: TimeInterval, presetId: String? = nil) {
@@ -159,6 +173,7 @@ public final class CaffeineManager: ObservableObject {
         targetDate = Date().addingTimeInterval(duration)
         
         startTimer()
+        updateDockPolicy()
     }
     
     public func stop() {
@@ -172,6 +187,7 @@ public final class CaffeineManager: ObservableObject {
         totalSeconds = 0
         targetDate = nil
         activePresetId = nil
+        updateDockPolicy()
     }
     
     public func toggle() {
@@ -329,11 +345,31 @@ public final class CaffeineManager: ObservableObject {
     
     // MARK: - System Integration
     
-    private func updateDockPolicy() {
-        if showInDock {
-            NSApplication.shared.setActivationPolicy(.regular)
+    public func updateDockPolicy() {
+        if showInDock && isActive {
+            if NSApplication.shared.activationPolicy() != .regular {
+                NSApplication.shared.setActivationPolicy(.regular)
+            }
         } else {
-            NSApplication.shared.setActivationPolicy(.accessory)
+            if NSApplication.shared.activationPolicy() != .accessory {
+                NSApplication.shared.setActivationPolicy(.accessory)
+            }
+        }
+    }
+    
+    private func updateLaunchAtLogin() {
+        do {
+            if launchAtLogin {
+                if SMAppService.mainApp.status != .enabled {
+                    try SMAppService.mainApp.register()
+                }
+            } else {
+                if SMAppService.mainApp.status == .enabled {
+                    try SMAppService.mainApp.unregister()
+                }
+            }
+        } catch {
+            print("Caffeine: Launch at login failed: \(error)")
         }
     }
     

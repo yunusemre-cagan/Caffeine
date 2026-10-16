@@ -54,6 +54,14 @@
 - **🔔 Audio & Notifications (Ses ve Bildirimler):**
   - Süre dolduğunda hoş bir macOS sistem sesi (`Glass`) çalar ve bildirim gönderir.
 
+- **⚡️ Launch at Login & Smart Dock (Giriş Öğeleri & Akıllı Dock):**
+  - **Başlangıçta Otomatik Başlat:** Mac açıldığında menü çubuğunda sessizce hazır bekler; uygulamayı Dock'ta tutmak zorunda kalmazsınız.
+  - **Akıllı Dock Politikası:** Yalnızca sayaç aktifken veya pencere açıkken Dock'ta görünür; pasif duruma geçtiğinde Dock'tan otomatik gizlenir.
+
+- **🎛 AppIntents, Denetimler & URL Scheme:**
+  - **AppIntents Desteği:** macOS Kestirmeler (Shortcuts), Spotlight ve Denetim Merkezi entegrasyonu.
+  - **Hızlı URL Şeması:** Terminalden veya kısayollardan `open caffeine://toggle` veya `open caffeine://start` ile anında başlatma/durdurma.
+
 - **⚡️ 100% Native & Lightweight (%100 Yerel ve Hafif):**
   - Saf Swift & SwiftUI ile yazılmıştır.
   - Electron veya Node.js gerektirmez, toplam binary boyutu yalnızca ~600 KB'tır.
