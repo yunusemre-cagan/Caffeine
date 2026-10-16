@@ -161,9 +161,15 @@ struct StatusHeroView: View {
                     QuickAddButton(title: "+30 dk", seconds: 30 * 60, manager: manager)
                     QuickAddButton(title: "+1 sa", seconds: 60 * 60, manager: manager)
                 }
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .transition(
+                    .asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                        removal: .opacity
+                    )
+                )
             }
         }
+        .clipped()
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)

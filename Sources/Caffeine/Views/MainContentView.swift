@@ -6,6 +6,9 @@ struct MainContentView: View {
     var isStandaloneWindow: Bool = false
     @Environment(\.openWindow) private var openWindow
     
+    @State private var isDetachHovered: Bool = false
+    @State private var isQuitHovered: Bool = false
+    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 16) {
@@ -21,14 +24,6 @@ struct MainContentView: View {
                         Text("Caffeine")
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(.primary)
-                        
-                        Text("v1.0")
-                            .font(.system(size: 10, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.orange.opacity(0.15))
-                            .foregroundColor(.orange)
-                            .clipShape(Capsule())
                     }
                     
                     Spacer()
@@ -41,9 +36,13 @@ struct MainContentView: View {
                         }) {
                             Image(systemName: "arrow.up.right.square")
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(isDetachHovered ? .primary : .secondary)
+                                .frame(width: 24, height: 24)
+                                .background(Color.primary.opacity(isDetachHovered ? 0.08 : 0.0))
+                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                         }
                         .buttonStyle(.plain)
+                        .onHover { isDetachHovered = $0 }
                         .help("Ayrı pencerede aç")
                     }
                     
@@ -54,9 +53,13 @@ struct MainContentView: View {
                     }) {
                         Image(systemName: "power")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(.red.opacity(0.8))
+                            .foregroundColor(isQuitHovered ? .red : .red.opacity(0.85))
+                            .frame(width: 24, height: 24)
+                            .background(Color.red.opacity(isQuitHovered ? 0.12 : 0.0))
+                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     }
                     .buttonStyle(.plain)
+                    .onHover { isQuitHovered = $0 }
                     .help("Caffeine'den çıkış yap")
                 }
                 .padding(.horizontal, 4)
@@ -73,29 +76,32 @@ struct MainContentView: View {
                 // Settings & Preferences (Display sleep, notifications, etc.)
                 SettingsView(manager: manager)
                 
-                // Footer
-                HStack {
-                    Image(systemName: "lock.shield")
-                        .font(.system(size: 10))
-                        .foregroundColor(.secondary)
+                // Minimal Footer with Caffeine & Version
+                VStack(spacing: 8) {
+                    Divider()
+                        .opacity(0.3)
+                        .padding(.horizontal, 2)
                     
-                    Text("macOS IOKit ile yerel ve güvenli güç yönetimi")
-                        .font(.system(size: 10))
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    Button("Çıkış Yap") {
-                        manager.stop()
-                        NSApp.terminate(nil)
+                    HStack(alignment: .center) {
+                        HStack(spacing: 5) {
+                            Image(systemName: "lock.shield.fill")
+                                .font(.system(size: 9.5))
+                                .foregroundColor(.secondary.opacity(0.7))
+                            
+                            Text("macOS IOKit ile yerel güç yönetimi")
+                                .font(.system(size: 10))
+                                .foregroundColor(.secondary.opacity(0.75))
+                        }
+                        
+                        Spacer()
+                        
+                        Text("Caffeine v1.0")
+                            .font(.system(size: 9.5, weight: .medium, design: .rounded))
+                            .foregroundColor(.secondary.opacity(0.5))
                     }
-                    .buttonStyle(.plain)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 2)
                 }
-                .padding(.horizontal, 4)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
             }
             .padding(16)
         }

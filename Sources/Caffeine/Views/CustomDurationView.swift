@@ -3,11 +3,12 @@ import SwiftUI
 struct CustomDurationView: View {
     @ObservedObject var manager: CaffeineManager
     @State private var isExpanded: Bool = true
+    @State private var isHeaderHovered: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Button(action: {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
                     isExpanded.toggle()
                 }
             }) {
@@ -22,12 +23,21 @@ struct CustomDurationView: View {
                     
                     Spacer()
                     
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    Image(systemName: "chevron.right")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundColor(.secondary)
+                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
                 }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(isHeaderHovered ? Color.primary.opacity(0.04) : Color.clear)
+                )
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .onHover { isHeaderHovered = $0 }
             
             if isExpanded {
                 VStack(spacing: 12) {
@@ -108,9 +118,16 @@ struct CustomDurationView: View {
                                 .stroke(Color.primary.opacity(0.06), lineWidth: 1)
                         )
                 )
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .clipped()
+                .transition(
+                    .asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.98, anchor: .top)),
+                        removal: .opacity
+                    )
+                )
             }
         }
+        .clipped()
     }
     
     private func addMinutes(_ mins: Int) {
