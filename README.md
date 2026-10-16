@@ -39,7 +39,7 @@
 
 - **🍏 Menu Bar Integration (Menü Çubuğu):**
   - macOS menü çubuğunun sağ üst köşesinde zarif bir kahve fincanı simgesi (☕️).
-  - Sayaç çalışırken menü çubuğunda kalan süre anlık olarak akar (`☕️ 01:29:45` veya `☕️ 45dk`).
+  - Sayaç çalışırken menü çubuğunda simgenin solunda kalan süre anlık olarak akar (`45dk ☕️` veya `23s ☕️`).
   - Simgeden açılır etkileşimli popover kontrol paneli.
 
 - **🪟 Dual Mode (Menü Çubuğu + Bağımsız Pencere):**

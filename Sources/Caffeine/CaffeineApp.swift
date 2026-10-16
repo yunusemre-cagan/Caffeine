@@ -38,16 +38,17 @@ struct CaffeineApp: App {
         MenuBarExtra {
             MainContentView(manager: manager, isStandaloneWindow: false)
         } label: {
-            HStack(spacing: 4) {
-                Image(systemName: manager.isActive ? "cup.and.saucer.fill" : "cup.and.saucer")
-                
+            HStack(spacing: 5) {
                 if manager.isActive && manager.showTimeInMenuBar {
                     let display = manager.menuBarDisplayString
                     if !display.isEmpty {
                         Text(display)
-                            .font(.system(size: 11, weight: .medium, design: .monospaced))
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .monospacedDigit()
                     }
                 }
+                
+                Image(systemName: manager.isActive ? "cup.and.saucer.fill" : "cup.and.saucer")
             }
         }
         .menuBarExtraStyle(.window)

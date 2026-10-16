@@ -95,7 +95,7 @@ struct MainContentView: View {
                         
                         Spacer()
                         
-                        Text("Caffeine v1.0")
+                        Text("Caffeine v1.1")
                             .font(.system(size: 9.5, weight: .medium, design: .rounded))
                             .foregroundColor(.secondary.opacity(0.5))
                     }
