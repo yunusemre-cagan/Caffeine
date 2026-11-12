@@ -75,6 +75,7 @@ SWIFT_SOURCES=(
     Sources/Caffeine/CaffeineApp.swift
     Sources/Caffeine/CaffeineManager.swift
     Sources/Caffeine/CaffeineIntents.swift
+    Sources/Caffeine/Views/Theme.swift
     Sources/Caffeine/Views/StatusHeroView.swift
     Sources/Caffeine/Views/PresetGridView.swift
     Sources/Caffeine/Views/CustomDurationView.swift

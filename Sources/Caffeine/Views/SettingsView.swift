@@ -2,183 +2,104 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var manager: CaffeineManager
-    @State private var isExpanded: Bool = false
-    @State private var isHeaderHovered: Bool = false
-    
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 2)
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Button(action: {
-                withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
-                    isExpanded.toggle()
-                }
-            }) {
-                HStack {
-                    Image(systemName: "gearshape.fill")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(isExpanded ? .orange : .secondary)
-                    
-                    Text("Ayarlar ve Tercihler")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.secondary)
-                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                }
-                .padding(.vertical, 4)
-                .padding(.horizontal, 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(isHeaderHovered ? Color.primary.opacity(0.04) : Color.clear)
-                )
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .onHover { isHeaderHovered = $0 }
-            
-            if isExpanded {
-                VStack(spacing: 8) {
-                    // Prevent Display Sleep Toggle
-                    ToggleRow(
-                        icon: "display",
-                        title: "Ekranı da Açık Tut",
-                        subtitle: "Ekranın kararmasını ve sistemin uykuya geçmesini engeller",
-                        isOn: $manager.preventDisplaySleep
-                    )
-                    
-                    Divider()
-                        .padding(.horizontal, 4)
-                        .opacity(0.6)
-                    
-                    // Show Time in Menu Bar Toggle
-                    ToggleRow(
-                        icon: "menubar.arrow.up.rectangle",
-                        title: "Menü Çubuğunda Süreyi Göster",
-                        subtitle: "Kalan süreyi menü simgesinin yanında gösterir",
-                        isOn: $manager.showTimeInMenuBar
-                    )
-                    
-                    Divider()
-                        .padding(.horizontal, 4)
-                        .opacity(0.6)
-                    
-                    // Sound on Finish Toggle
-                    ToggleRow(
-                        icon: "speaker.wave.2",
-                        title: "Süre Dolduğunda Ses Çal",
-                        subtitle: "Zamanlayıcı bittiğinde hoş bir ses uyarısı verir",
-                        isOn: $manager.playSoundOnFinish
-                    )
-                    
-                    Divider()
-                        .padding(.horizontal, 4)
-                        .opacity(0.6)
-                    
-                    // Notification on Finish Toggle
-                    ToggleRow(
-                        icon: "bell.badge",
-                        title: "Bildirim Gönder",
-                        subtitle: "Süre bitiminde sistem bildirimi ile haber verir",
-                        isOn: $manager.sendNotificationOnFinish
-                    )
-                    
-                    Divider()
-                        .padding(.horizontal, 4)
-                        .opacity(0.6)
-                    
-                    // Launch at Login Toggle
-                    ToggleRow(
-                        icon: "rays",
-                        title: "Başlangıçta Otomatik Başlat",
-                        subtitle: "Mac açıldığında menü çubuğunda hazır bekler, Dock'ta kalmasına gerek kalmaz",
-                        isOn: $manager.launchAtLogin
-                    )
-                    
-                    Divider()
-                        .padding(.horizontal, 4)
-                        .opacity(0.6)
-                    
-                    // Show in Dock Toggle
-                    ToggleRow(
-                        icon: "dock.rectangle",
-                        title: "Yalnızca Açıkken Dock'ta Göster",
-                        subtitle: "Sistem uyanıkken Dock'ta görünür, pasifken Dock'tan gizlenir",
-                        isOn: $manager.showInDock
-                    )
-                }
-                .padding(10)
-                .background(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color(nsColor: .controlBackgroundColor).opacity(0.4))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color.primary.opacity(0.06), lineWidth: 1)
-                        )
-                )
-                .clipped()
-                .transition(
-                    .asymmetric(
-                        insertion: .opacity.combined(with: .scale(scale: 0.98, anchor: .top)),
-                        removal: .opacity
-                    )
-                )
-            }
+        LazyVGrid(columns: columns, spacing: 10) {
+            SettingTile(
+                icon: "display",
+                title: "Ekranı Açık Tut",
+                subtitle: "Ekran kararmaz, sistem uykuya geçmez",
+                isOn: $manager.preventDisplaySleep
+            )
+            SettingTile(
+                icon: "menubar.arrow.up.rectangle",
+                title: "Menüde Süreyi Göster",
+                subtitle: "Kalan süre menü simgesinin yanında",
+                isOn: $manager.showTimeInMenuBar
+            )
+            SettingTile(
+                icon: "speaker.wave.2",
+                title: "Bitişte Ses Çal",
+                subtitle: "Süre dolunca kısa bir uyarı sesi",
+                isOn: $manager.playSoundOnFinish
+            )
+            SettingTile(
+                icon: "bell.badge",
+                title: "Bildirim Gönder",
+                subtitle: "Süre bitiminde sistem bildirimi",
+                isOn: $manager.sendNotificationOnFinish
+            )
+            SettingTile(
+                icon: "rays",
+                title: "Girişte Başlat",
+                subtitle: "Mac açılınca menü çubuğunda hazır",
+                isOn: $manager.launchAtLogin
+            )
+            SettingTile(
+                icon: "dock.rectangle",
+                title: "Yalnız Açıkken Dock'ta",
+                subtitle: "Pasifken Dock'tan gizlenir",
+                isOn: $manager.showInDock
+            )
         }
-        .clipped()
     }
 }
 
-private struct ToggleRow: View {
+private struct SettingTile: View {
     let icon: String
     let title: String
     let subtitle: String
     @Binding var isOn: Bool
-    @State private var isHovered: Bool = false
-    
+    @State private var hovered = false
+
     var body: some View {
-        Button(action: {
-            withAnimation(.snappy(duration: 0.2)) {
-                isOn.toggle()
-            }
-        }) {
-            HStack(alignment: .center, spacing: 10) {
-                Image(systemName: icon)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.orange)
-                    .frame(width: 20)
-                
+        Button {
+            withAnimation(Theme.spring) { isOn.toggle() }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Image(systemName: icon)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(Color.secondary))
+                        .frame(width: 30, height: 30)
+                        .background(
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .fill(isOn ? AnyShapeStyle(Theme.accentGradient) : AnyShapeStyle(Color.primary.opacity(0.07)))
+                        )
+
+                    Spacer()
+
+                    Toggle("", isOn: $isOn)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .tint(Theme.amber)
+                        .controlSize(.small)
+                        .allowsHitTesting(false)
+                }
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.primary)
-                    
+                        .font(.system(size: 12.5, weight: .semibold))
+                        .foregroundStyle(.primary)
                     Text(subtitle)
-                        .font(.system(size: 10, weight: .regular))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                
-                Spacer()
-                
-                Toggle("", isOn: $isOn)
-                    .labelsHidden()
-                    .toggleStyle(.switch)
-                    .tint(.orange)
-                    .controlSize(.small)
-                    .allowsHitTesting(false)
             }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 6)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(isHovered ? Color.primary.opacity(0.05) : Color.clear)
+            .padding(12)
+            .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+            .surface(
+                radius: 16,
+                fill: isOn ? Theme.amber.opacity(0.09) : Color.primary.opacity(hovered ? 0.075 : 0.04),
+                stroke: isOn ? Theme.amber.opacity(0.35) : Color.primary.opacity(hovered ? 0.13 : 0.07)
             )
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
+        .buttonStyle(PressableStyle(scale: 0.985))
+        .onHover { hovered = $0 }
+        .animation(Theme.quick, value: hovered)
     }
 }

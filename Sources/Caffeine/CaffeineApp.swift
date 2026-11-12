@@ -34,6 +34,7 @@ struct CaffeineApp: App {
                     handleURL(url)
                 }
         }
+        .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .defaultPosition(.center)
         

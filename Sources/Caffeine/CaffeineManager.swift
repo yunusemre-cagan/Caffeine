@@ -29,10 +29,10 @@ public final class CaffeineManager: ObservableObject {
     public static let defaultPresets: [PresetOption] = [
         PresetOption(id: "30m", title: "30 Dakika", subtitle: "Kısa çalışma", icon: "timer", duration: 30 * 60),
         PresetOption(id: "1h", title: "1 Saat", subtitle: "Odaklanma", icon: "hourglass", duration: 60 * 60),
-        PresetOption(id: "2h", title: "2 Saat", subtitle: "Toplantı / Kodlama", icon: "clock.badge.checkmark", duration: 2 * 60 * 60),
+        PresetOption(id: "2h", title: "2 Saat", subtitle: "Toplantı", icon: "clock.badge.checkmark", duration: 2 * 60 * 60),
         PresetOption(id: "5h", title: "5 Saat", subtitle: "Uzun görevler", icon: "flame.fill", duration: 5 * 60 * 60),
         PresetOption(id: "8h", title: "8 Saat", subtitle: "Tam mesai", icon: "briefcase.fill", duration: 8 * 60 * 60),
-        PresetOption(id: "inf", title: "Süresiz", subtitle: "Durdurana kadar", icon: "infinity", duration: 0)
+        PresetOption(id: "inf", title: "Süresiz", subtitle: "Manuel durdur", icon: "infinity", duration: 0)
     ]
     
     // Reactive States
